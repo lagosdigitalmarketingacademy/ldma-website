@@ -14,6 +14,13 @@ create table if not exists public.ldma_courses (
   starts_on date,
   capacity integer check (capacity is null or capacity > 0),
   is_published boolean not null default false,
+  constraint ldma_published_course_complete check (
+    not is_published or (
+      char_length(btrim(summary)) >= 15 and
+      format is not null and char_length(btrim(format)) >= 3 and
+      starts_on is not null and fee_kobo is not null
+    )
+  ),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
