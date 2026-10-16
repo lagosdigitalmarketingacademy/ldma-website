@@ -1,0 +1,32 @@
+import React,{useState} from 'react';
+import {ArrowUpRight,ArrowRight,Check} from 'lucide-react';
+
+const goals=[
+ {id:'grow',label:'Grow a business',note:'Understand customers, channels and growth',course:'Digital Marketing Strategy'},
+ {id:'ads',label:'Run better ads',note:'Work with budgets, campaigns and performance',course:'Performance Advertising'},
+ {id:'ai',label:'Use AI at work',note:'Build useful, responsible AI workflows',course:'AI for Business & Marketing'},
+ {id:'create',label:'Build a content engine',note:'Tell stronger stories and create consistently',course:'Content & Social Media'}
+];
+const formats=['Not decided','In person','Virtual','Hybrid'];
+const teamSizes=['1–5','6–15','16–30','31–60','60+'];
+
+async function copyText(value){try{await navigator.clipboard.writeText(value);return true;}catch{return false;}}
+export default function LeadTools(){
+ const [goal,setGoal]=useState('');const [experience,setExperience]=useState('new');
+ const [brief,setBrief]=useState({organisation:'',contact:'',email:'',teamSize:'6–15',format:'Not decided',priority:'',timeline:'Not decided'});
+ const [copied,setCopied]=useState('');const [expanded,setExpanded]=useState(false);
+ const recommendation=goals.find(g=>g.id===goal);
+ const teamBrief=['LDMA CORPORATE TRAINING BRIEF','Organisation: '+brief.organisation,'Contact person: '+brief.contact,'Contact email: '+brief.email,'Approximate team size: '+brief.teamSize,'Preferred delivery: '+brief.format,'Training goal: '+brief.priority,'Preferred timeline: '+brief.timeline].join('\n');
+ const guidance=experience==='new'?'Start with the foundations and move into practical exercises.':'Ask about advanced exercises and industry-specific applications.';
+ return <>
+ <section className="finder section" id="course-finder">
+  <div className="section-label"><span>04 / YOUR LEARNING PATH</span><span>FIND YOUR NEXT MOVE</span></div>
+  <div className="finder-heading"><div><span className="finder-pill">THE LDMA SKILL FINDER</span><h2>DON'T GUESS.<br/><em>FIND YOUR EDGE.</em></h2></div><p>Answer two quick questions and explore a learning area that fits your goals. Recommendations are rule-based guidance, not an admissions decision.</p></div>
+  <div className="finder-panel"><div className="finder-questions"><h3>01 <span>WHAT DO YOU WANT TO DO?</span></h3><div className="goal-grid">{goals.map(g=><button type="button" className={'goal-option '+(goal===g.id?'picked':'')} key={g.id} aria-pressed={goal===g.id} onClick={()=>{setGoal(g.id);setCopied('')}}><b>{g.label}</b><small>{g.note}</small><span>{goal===g.id?<Check size={18}/>:<ArrowUpRight size={18}/>}</span></button>)}</div><h3>02 <span>WHERE ARE YOU STARTING?</span></h3><div className="experience-row"><button aria-pressed={experience==='new'} className={experience==='new'?'picked':''} onClick={()=>setExperience('new')}>I'M STARTING OUT</button><button aria-pressed={experience==='working'} className={experience==='working'?'picked':''} onClick={()=>setExperience('working')}>I HAVE SOME EXPERIENCE</button></div></div><aside className="finder-result"><span>YOUR SUGGESTED DIRECTION</span>{recommendation?<><div className="finder-result-icon">↗</div><h3>{recommendation.course}</h3><p>{guidance}</p><a href="#programmes" onClick={()=>{setExpanded(true);document.getElementById('programmes')?.scrollIntoView({behavior:'smooth'})}}>VIEW LEARNING AREAS <ArrowUpRight size={18}/></a></>:<><h3>YOUR NEXT<br/>MOVE STARTS<br/>WITH A GOAL.</h3><p>Choose what you'd like to achieve to get a suggested learning direction.</p></>}{expanded&&recommendation&&<small className="finder-result-note">Open the matching course from the programme list above to explore its details.</small>}</aside></div>
+ </section>
+ <section className="corporate-builder section" id="training-brief">
+ <div className="section-label"><span>05 / FOR THE TEAMS THAT MEAN BUSINESS</span><span>BUILD A TRAINING BRIEF</span></div>
+ <div className="corporate-heading"><h2>YOUR TEAM.<br/><em>YOUR NEXT LEVEL.</em></h2><p>Tell us the skills your team needs. Create a concise brief you can send to LDMA when you are ready to discuss a tailored training programme.</p></div>
+ <div className="corporate-body"><form onSubmit={async e=>{e.preventDefault();setCopied(await copyText(teamBrief)?'brief':'failed')}} className="corporate-form"><label>ORGANISATION NAME<input required maxLength="140" value={brief.organisation} onChange={e=>setBrief({...brief,organisation:e.target.value})} placeholder="Your company or organisation"/></label><label>CONTACT PERSON<input required maxLength="100" autoComplete="name" value={brief.contact} onChange={e=>setBrief({...brief,contact:e.target.value})} placeholder="Full name"/></label><label>WORK EMAIL<input required type="email" autoComplete="email" value={brief.email} onChange={e=>setBrief({...brief,email:e.target.value})} placeholder="you@company.com"/></label><label>TEAM SIZE<select value={brief.teamSize} onChange={e=>setBrief({...brief,teamSize:e.target.value})}>{teamSizes.map(v=><option key={v}>{v}</option>)}</select></label><label>TRAINING FORMAT<select value={brief.format} onChange={e=>setBrief({...brief,format:e.target.value})}>{formats.map(v=><option key={v}>{v}</option>)}</select></label><label>PREFERRED TIMELINE<select value={brief.timeline} onChange={e=>setBrief({...brief,timeline:e.target.value})}>{['Not decided','As soon as practical','Within 1–3 months','Later this year'].map(v=><option key={v}>{v}</option>)}</select></label><label className="wide">WHAT WOULD SUCCESS LOOK LIKE?<textarea required rows="4" maxLength="1500" placeholder="Describe the business challenge, roles being trained, or skills you'd like your team to build." value={brief.priority} onChange={e=>setBrief({...brief,priority:e.target.value})}/></label><div className="wide corporate-actions"><button type="submit">COPY MY TRAINING BRIEF <ArrowUpRight size={19}/></button><small role="status">{copied==='brief'?'Brief copied. Please send it to LDMA through an official channel.':copied==='failed'?'Copying is unavailable in this browser. You can select and copy the preview on the right.':''}</small></div></form><aside className="brief-preview"><div className="brief-preview-top"><span>YOUR BRIEF / LIVE PREVIEW</span><span>LDMA.</span></div><pre>{teamBrief}</pre><p>Preview only. This form does not transmit or save personal information to LDMA. No booking or quotation has been created.</p></aside></div>
+ </section></>
+}
