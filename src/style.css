@@ -32,3 +32,13 @@ html{scroll-padding-top:25px}
 @media(max-width:1100px){.header{gap:14px}.nav{gap:12px}.nav a{font-size:11px}.logo small{display:none}}
 @media(max-width:960px){.logo small{display:block}.nav{gap:25px}.nav a{font-size:20px}.menu{flex:none}}
 @media(max-width:650px){.footer-links{gap:17px}.contact-links{align-items:stretch;width:100%}.contact-links .btn-lime{min-width:0}}
+
+/* Sticky, keyboard-friendly site navigation */
+html{scroll-padding-top:104px}
+.header{position:sticky;top:0;z-index:60;background:#111}
+.nav a[aria-current="location"]{color:var(--ldma-sky);box-shadow:inset 0 -2px 0 var(--ldma-sky);padding-bottom:7px}
+.skip-link{position:fixed;z-index:200;top:-100px;left:12px;padding:14px 20px;background:var(--ldma-yellow);color:#111;font-weight:800}
+.skip-link:focus{top:12px}
+#main-content{scroll-margin-top:100px}
+@media(max-width:1000px){.nav.open{max-height:calc(100dvh - 84px);overflow-y:auto;box-shadow:0 20px 30px #000a}.nav a[aria-current="location"]{box-shadow:none;border-left:3px solid var(--ldma-sky);padding-left:12px}}
+@media(max-width:650px){.nav.open{max-height:calc(100dvh - 74px)}}
