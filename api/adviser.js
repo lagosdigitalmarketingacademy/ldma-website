@@ -7,6 +7,8 @@ const programmes=JSON.parse(readFileSync(new URL('../data/2027-programmes.json',
 const json=(res,status,body)=>res.status(status).setHeader('Content-Type','application/json; charset=utf-8').setHeader('Cache-Control','no-store').end(JSON.stringify(body));
 const allowedOrigin=origin=>!origin||['https://ldmacademy.com','https://www.ldmacademy.com','https://ldma-website.vercel.app'].includes(origin)||/^https:\/\/ldma-website-[a-z0-9-]+\.vercel\.app$/.test(origin);
 const trim=(v,n)=>typeof v==='string'?v.trim().slice(0,n):'';
+// Upstash Marketplace exposes KV_REST_API_*; direct Upstash uses UPSTASH_REDIS_REST_*.
+const redisConfig=()=>({url:process.env.UPSTASH_REDIS_REST_URL||process.env.KV_REST_API_URL,token:process.env.UPSTASH_REDIS_REST_TOKEN||process.env.KV_REST_API_TOKEN});
 const provider=()=>{
  if(process.env.AI_GATEWAY_MODEL&&(process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN))
   return {url:'https://ai-gateway.vercel.sh/v1/responses',key:process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN,model:process.env.AI_GATEWAY_MODEL};
@@ -17,10 +19,11 @@ const provider=()=>{
 const modelText=data=>(data.output||[]).flatMap(item=>(item.content||[]).filter(c=>c.type==='output_text'&&typeof c.text==='string').map(c=>c.text)).join('\n').trim();
 async function enforceLimit(req){
  const ip=String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0].trim();
+ const redis=redisConfig();
  const fingerprint=createHash('sha256').update(process.env.LDMA_RATE_LIMIT_SALT+':'+ip).digest('hex').slice(0,28);
  const code="local n=redis.call('INCR',KEYS[1]); if n == 1 then redis.call('EXPIRE',KEYS[1],ARGV[1]) end; return n";
  for(const [name,limit,ttl] of [['ip:'+fingerprint,12,3600],['global',500,86400]]){
-  const response=await fetch(process.env.UPSTASH_REDIS_REST_URL,{method:'POST',headers:{Authorization:'Bearer '+process.env.UPSTASH_REDIS_REST_TOKEN,'Content-Type':'application/json'},body:JSON.stringify(['EVAL',code,1,'ldma:ai:'+name,ttl]),signal:AbortSignal.timeout(3000)});
+  const response=await fetch(redis.url,{method:'POST',headers:{Authorization:'Bearer '+redis.token,'Content-Type':'application/json'},body:JSON.stringify(['EVAL',code,1,'ldma:ai:'+name,ttl]),signal:AbortSignal.timeout(3000)});
   if(!response.ok)throw new Error('rate-service');
   const payload=await response.json();
   if(payload.error||!Number.isFinite(Number(payload.result)))throw new Error('rate-service');
@@ -49,8 +52,8 @@ export default async function handler(req,res){
  if(!allowedOrigin(req.headers.origin))return json(res,403,{error:'Origin not allowed'});
  if(!String(req.headers['content-type']||'').toLowerCase().includes('application/json'))return json(res,415,{error:'Expected JSON'});
  if(Number(req.headers['content-length']||0)>18000)return json(res,413,{error:'Message too long'});
- const config=provider();
- if(!config||!process.env.UPSTASH_REDIS_REST_URL||!process.env.UPSTASH_REDIS_REST_TOKEN||!process.env.LDMA_RATE_LIMIT_SALT)
+ const config=provider(),redis=redisConfig();
+ if(!config||!redis.url||!redis.token||!process.env.LDMA_RATE_LIMIT_SALT)
   return json(res,503,{error:'Ask LDMA AI is not connected yet. Please email info@ldmacademy.com for help.',code:'not_configured'});
  let body;
  try{body=typeof req.body==='string'?JSON.parse(req.body):req.body||{}}catch{return json(res,400,{error:'Invalid message format'})}
