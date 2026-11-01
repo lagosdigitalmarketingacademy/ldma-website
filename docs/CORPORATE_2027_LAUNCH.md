@@ -8,11 +8,11 @@
 
 ## Required before enabling online submissions
 1. Review and execute `supabase/corporate_enquiries.sql` **only in the correct LDMA Supabase project**.
-2. Add `LDMA_SUPABASE_SERVICE_ROLE_KEY` as a **server-only** Vercel environment variable. Do not prefix with `VITE_`, paste it into source, or expose it to browsers.
+2. Add `LDMA_SUPABASE_SERVICE_ROLE_KEY` as a **server-only** Vercel environment variable. Do not prefix with `VITE_`, paste it into source, or expose it to browsers. Configure `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` and `LDMA_RATE_LIMIT_SALT` as server-only secrets for fail-closed abuse protection. The endpoint will refuse submissions without them.
 3. Confirm `VITE_SUPABASE_URL` points to the LDMA project. Redeploy the branch preview and test an enquiry using dummy data.
 4. Set `VITE_CORPORATE_ENQUIRY_ENABLED=true` on the intended Vercel environment **only after** the private database, service role key and endpoint have been tested. Until then, the website opens a prefilled email draft.
 5. Official LDMA corporate enquiry email confirmed: `info@ldmacademy.com`. Test that messages are actually received.
-6. Implement rate limiting, abuse monitoring and an email notification or admin queue before enabling online intake.
+6. Test the server-side rate limits (5 per IP per hour; 200 global per day), honeypot, origin validation, error fallback and monitoring. Add email notifications or a protected admin queue before enabling online intake.
 7. Confirm the production domain and update canonical and Open Graph URLs. The canonical URL is provisionally set to `https://ldmacademy.com/for-business/`.
 8. Review privacy notice, data retention, consent language, and access to lead records.
 
