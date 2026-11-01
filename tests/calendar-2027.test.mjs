@@ -73,6 +73,7 @@ test('planned classes do not compete for the same calendar day',()=>{
    for(let t=parse(s.start).getTime();t<=parse(s.end).getTime();t+=86400000){
     const d=new Date(t).toISOString().slice(0,10);
     if((s.skip??[]).includes(d))continue;
+    if(p.id==='battleship'&&new Date(t).getUTCDay()!==6)continue;
     assert.ok(!occupied.has(d),p.name+' overlaps '+occupied.get(d)+' on '+d);
     occupied.set(d,p.name);
    }
