@@ -2,7 +2,7 @@ import test,{beforeEach,afterEach} from 'node:test';
 import assert from 'node:assert/strict';
 import handler from '../api/adviser.js';
 
-const envKeys=['OPENAI_API_KEY','LDMA_AI_MODEL','AI_GATEWAY_API_KEY','AI_GATEWAY_MODEL','VERCEL_OIDC_TOKEN','UPSTASH_REDIS_REST_URL','UPSTASH_REDIS_REST_TOKEN','LDMA_RATE_LIMIT_SALT'];
+const envKeys=['OPENAI_API_KEY','LDMA_AI_MODEL','AI_GATEWAY_API_KEY','AI_GATEWAY_MODEL','VERCEL_OIDC_TOKEN','UPSTASH_REDIS_REST_URL','UPSTASH_REDIS_REST_TOKEN','KV_REST_API_URL','KV_REST_API_TOKEN','LDMA_RATE_LIMIT_SALT'];
 const saved=Object.fromEntries(envKeys.map(k=>[k,process.env[k]]));
 const oldFetch=globalThis.fetch;
 function req(body={message:'How do I improve my conversion rate?',history:[]},extra={}){
@@ -34,6 +34,21 @@ test('no fake reply when distributed rate limiter is missing',async()=>{
  delete process.env.UPSTASH_REDIS_REST_TOKEN;
  const x=await call(req());
  assert.equal(x.code,503);
+});
+test('uses Vercel Marketplace KV_REST_API credentials without old Upstash names',async()=>{
+ process.env.KV_REST_API_URL='https://kv-redis.example.invalid';
+ process.env.KV_REST_API_TOKEN='marketplace-token';
+ delete process.env.UPSTASH_REDIS_REST_URL;
+ delete process.env.UPSTASH_REDIS_REST_TOKEN;
+ let calls=0;
+ globalThis.fetch=async(url,opts)=>{
+  if(String(url).includes('kv-redis')){calls++;assert.equal(opts.headers.Authorization,'Bearer marketplace-token');return {ok:true,json:async()=>({result:1})};}
+  return {ok:true,json:async()=>({output:[{content:[{type:'output_text',text:'Ask the customer what stopped them from purchasing.'}]}]})};
+ };
+ const x=await call(req());
+ assert.equal(x.code,200);
+ assert.equal(calls,2);
+ assert.match(x.data.reply,/customer/);
 });
 test('rejects invalid origin and method',async()=>{
  assert.equal((await call(req(undefined,{method:'GET'}))).code,405);
