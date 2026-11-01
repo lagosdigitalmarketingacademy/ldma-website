@@ -18,6 +18,9 @@ for(const p of pages){
 }
 const main=read('src/App.jsx');
 const business=read('src/CorporatePage.jsx');
+const portal=read('src/Portal.jsx');
+const store=read('src/Store.jsx');
+const api=read('api/corporate-enquiry.js');
 for(const href of ['/for-business/','/insights/','#programmes']){
  if(!main.includes(href))errors.push('Main navigation missing: '+href);
 }
@@ -28,5 +31,12 @@ if(!business.includes('info@ldmacademy.com'))errors.push('Confirmed corporate em
 if(!business.includes('state===\'error\''))errors.push('Email fallback on failed submission missing');
 if(!existsSync(resolve(root,'api/corporate-enquiry.js')))errors.push('Enquiry API handler missing');
 if(!existsSync(resolve(root,'supabase/corporate_enquiries.sql')))errors.push('Lead storage schema missing');
+if(!portal.includes("VITE_PORTAL_ENABLED==='true'"))errors.push('Unverified portal is not feature gated');
+if(!store.includes("VITE_CATALOGUE_ENABLED==='true'"))errors.push('Unverified catalogue is not feature gated');
+if(!store.includes("VITE_ADVISER_AI_ENABLED==='true'"))errors.push('Unverified AI adviser is not feature gated');
+if(!business.includes("VITE_CORPORATE_ENQUIRY_ENABLED==='true'"))errors.push('Corporate intake is not feature gated');
+if(!api.includes('UPSTASH_REDIS_REST_TOKEN'))errors.push('Server-side enquiry rate limiting missing');
+if(read('for-business/index.html').includes('ldma-website.vercel.app'))errors.push('Corporate OG URL uses stale preview domain');
+if(!existsSync(resolve(root,'tests/corporate-enquiry.test.mjs')))errors.push('API regression tests missing');
 if(errors.length){console.error('LDMA site check failed:\n'+errors.map(x=>' - '+x).join('\n'));process.exit(1)}
 console.log('LDMA site check passed: '+pages.length+' pages, key navigation and enquiry fallback verified.');
