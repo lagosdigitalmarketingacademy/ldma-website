@@ -19,7 +19,7 @@
 ## Feature activation safety
 - The student portal is disabled by default. Enable `VITE_PORTAL_ENABLED=true` only after confirming the correct Supabase project, RLS and auth email delivery.
 - The live product catalogue is disabled by default. Enable `VITE_CATALOGUE_ENABLED=true` only after verifying product tables, published records and RLS.
-- The AI adviser runs in guided mode by default. Enable `VITE_ADVISER_AI_ENABLED=true` only after configuring and testing the secure AI endpoint, catalogue and distributed rate limits.
+- Ask LDMA now uses genuine model-generated responses only. When offline it says AI is not connected rather than showing canned replies. Enable `VITE_ADVISER_AI_ENABLED=true` only after configuring the secure model endpoint, testing quality and distributed rate limits.
 - Corporate enquiries remain email-first until `VITE_CORPORATE_ENQUIRY_ENABLED=true` is explicitly set after secure server-side testing.
 
 ## Proposed 2027 programme calendar
@@ -29,6 +29,12 @@
 - The calendar is linked from the homepage, Battleship page, corporate footer and search sitemap.
 - Programme assumptions and pricing rationale: `docs/LDMA_2027_PROGRAMME_PLAN.md`; structured data: `data/2027-programmes.json`.
 - `tests/calendar-2027.test.mjs` checks date formats, tuition consistency, Saturday/weekday schedules, holiday break and collisions.
+
+## Student applications and Ask LDMA AI
+- Added `/apply/`: programme/cohort selection, applicant details, consent, review and email-first application handoff; no false submitted or payment claims.
+- Prepared `api/student-application.js` and `supabase/student_applications_2027.sql`, both requiring private database access and secure activation before direct intake.
+- Replaced Ask LDMA keyword-script fallback with genuine conversational AI via the server API. When no model is connected, it clearly reports offline status.
+- Complete activation steps, staff notification and verified payment provider plan are in `docs/ADMISSIONS_2027_AND_ASK_LDMA.md`.
 
 ## Quality assurance
 - Desktop, tablet and mobile navigation; keyboard tab order; mobile menu close on click; anchors and back links.
