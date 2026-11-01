@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 const root=process.cwd();
 const read=p=>readFileSync(resolve(root,p),'utf8');
 const pages=[
- 'index.html','for-business/index.html','insights/index.html',
+ 'index.html','for-business/index.html','battleship/index.html','insights/index.html',
  'insights/why-instagram-views-dont-become-sales/index.html',
  'insights/how-to-build-a-marketing-plan-in-nigeria/index.html',
  'insights/practical-ai-for-nigerian-business-teams/index.html','privacy/index.html'
