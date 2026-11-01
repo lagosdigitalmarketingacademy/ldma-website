@@ -1,6 +1,6 @@
 # LDMA 2027 admissions and Ask LDMA AI — activation guide
 
-**Prepared:** 1 November 2026. **Status:** developed on preview branch, not approved for production activation.
+**Prepared:** 1 November 2026. **Status:** developed on preview branch, not approved for production activation.\n\n### Live setup status — 1 November 2026\n\n- Vercel team access has been approved and the LDMA project is accessible.\n- Configured preview-only `AI_GATEWAY_MODEL=openai/gpt-5-mini` (model ID verified against the Vercel Gateway catalogue).\n- Generated and stored encrypted preview-only `LDMA_RATE_LIMIT_SALT`. Do not copy the value into code.\n- **BLOCKED:** no Upstash Redis integration or `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` is connected. The API intentionally refuses model calls without it.\n- **BLOCKED:** Vercel Firewall API reports no Seawall configuration for this project; do not assume a WAF rule was applied.\n- **NOT ACTIVE:** `VITE_ADVISER_AI_ENABLED` is not enabled; visitors see a truthful offline state. No live provider call or end-to-end AI response has been verified yet.\n- **BUDGET:** Vercel AI Gateway spend limit / billing configuration has not been verified; set a small preview budget before enabling public use.\n- **GIT:** The Vercel project is not linked to the GitHub repository at the project-settings level. Preview deployments have been created explicitly from the GitHub feature branch. This also means Vercel does not allow branch-specific environment variables; use preview-only scope.\n\n**Required user-side action:** In the LDMA Vercel project, open **Infrastructure → Storage → Create Database**, choose **Upstash Redis**, select a free/test plan if offered, and connect it to the **Preview** environment of `ldma-website`. Verify that Vercel injected `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` into Preview (not Production). Do not share credentials in chat. See https://vercel.com/marketplace/upstash/upstash-kv. After this, the developer can inspect the environment, redeploy, run a live chat test and activate the preview flag.\n
 
 ## 1. Student registration journey
 
@@ -54,7 +54,7 @@ The server:
 - Uses recent chat turns for conversational context, never browser-supplied system messages.
 - Grounds programme facts in `data/2027-programmes.json`, explains the agreed ₦250,000 Battleship fee, and clearly identifies tentative dates and other fees.
 - Answers practical marketing questions instead of only pointing to courses.
-- Uses fail-closed distributed limits: 12 requests/IP/hour, 500 requests globally/day.
+- Uses fail-closed distributed limits: 12 requests/IP/hour, 500 requests globally/day. Note that the global limit is a daily request-count ceiling, not a dollar spend cap. A separate provider budget is required.
 - Requires server-side rate-limit variables `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `LDMA_RATE_LIMIT_SALT`.
 - Never exposes provider credentials in the browser or stores chat content in the OpenAI Responses API (`store:false`).
 - Requires `VITE_ADVISER_AI_ENABLED=true` in the intended preview environment after backend and budget tests.
