@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 const root=process.cwd();
 const read=p=>readFileSync(resolve(root,p),'utf8');
 const pages=[
- 'index.html','for-business/index.html','battleship/index.html','calendar/index.html','insights/index.html',
+ 'index.html','for-business/index.html','battleship/index.html','calendar/index.html','apply/index.html','insights/index.html',
  'insights/why-instagram-views-dont-become-sales/index.html',
  'insights/how-to-build-a-marketing-plan-in-nigeria/index.html',
  'insights/practical-ai-for-nigerian-business-teams/index.html','privacy/index.html'
@@ -22,6 +22,8 @@ const portal=read('src/Portal.jsx');
 const store=read('src/Store.jsx');
 const api=read('api/corporate-enquiry.js');
 const calendar=read('calendar/index.html');
+const application=read('apply/index.html');
+const adviser=read('api/adviser.js');
 for(const href of ['/for-business/','/insights/','#programmes']){
  if(!main.includes(href))errors.push('Main navigation missing: '+href);
 }
@@ -30,6 +32,13 @@ for(const marker of ['id="solutions"','id="corporate-enquiry"','id="how-it-works
 }
 if(!business.includes('info@ldmacademy.com'))errors.push('Confirmed corporate email missing');
 if(!main.includes('/calendar/'))errors.push('2027 training calendar not linked from homepage');
+if(!main.includes('/apply/'))errors.push('2027 student application not linked from homepage');
+if(!calendar.includes('/apply/?programme=battleship'))errors.push('2027 cohort applications not linked from calendar');
+if(!application.includes('PREPARE APPLICATION EMAIL'))errors.push('Email-first application flow missing');
+if(!adviser.includes('AI_GATEWAY_MODEL')||!adviser.includes('OPENAI_API_KEY'))errors.push('Real AI provider configuration missing');
+if(store.includes('localResponse('))errors.push('Fake keyword-based Ask LDMA responses remain');
+if(!existsSync(resolve(root,'tests/adviser.test.mjs')))errors.push('AI regression tests missing');
+if(!existsSync(resolve(root,'tests/application.test.mjs')))errors.push('Application regression tests missing');
 if(!read('battleship/index.html').includes('/calendar/'))errors.push('2027 calendar not linked from Battleship page');
 if(!calendar.includes('PLANNING PREVIEW')||!calendar.includes('NOT OPEN FOR PAYMENT'))errors.push('Unconfirmed 2027 dates/fees are not clearly labelled');
 if(!calendar.includes('mailto:info@ldmacademy.com'))errors.push('2027 course enquiry email link missing');
