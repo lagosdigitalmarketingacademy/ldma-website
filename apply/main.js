@@ -76,6 +76,7 @@ form.addEventListener('submit',e=>e.preventDefault());
 $('send-email').addEventListener('click',async()=>{
  if(currentStep!==3)return;
  const button=$('send-email');
+ if(button.dataset.submitted==='true')return;
  if(onlineEnabled&&button.dataset.emailFallback!=='true'){
   button.disabled=true;button.textContent='SUBMITTING…';status.textContent='';
   try{
@@ -84,7 +85,7 @@ $('send-email').addEventListener('click',async()=>{
    const data=await response.json().catch(()=>({}));
    if(!response.ok||!data.ok||!data.reference)throw new Error(data.error||'Unable to confirm your application.');
    status.textContent='Application enquiry received. Reference: '+data.reference+'. This is not an admission, reserved seat or payment confirmation. LDMA will contact you after review.';
-   button.textContent='ENQUIRY RECEIVED';return;
+   button.textContent='ENQUIRY RECEIVED';button.dataset.submitted='true';return;
   }catch(err){status.textContent=(err.message||'Online intake is unavailable.')+' You can still prepare and send the application by email.';button.textContent='PREPARE APPLICATION EMAIL →';button.dataset.emailFallback='true';}
   finally{button.disabled=false;}
   return;
