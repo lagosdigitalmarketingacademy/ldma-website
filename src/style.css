@@ -58,3 +58,12 @@ html{scroll-padding-top:104px}
 .battleship-feature p{font-size:14px;line-height:1.7;color:#c4c8c7;max-width:610px;margin:0}
 .battleship-feature .btn-black{background:#51c8f1;color:#111;min-width:240px;flex-shrink:0}
 @media(max-width:750px){.battleship-feature{align-items:stretch;flex-direction:column;padding:25px}.battleship-feature .btn-black{min-width:0;width:100%}}
+
+/* 2027 proposed course calendar invitation */
+.calendar-teaser{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:30px 32px;margin:0 0 17px;background:#c6ecf4;color:#101113}
+.calendar-teaser small{display:block;font-size:10px;letter-spacing:.13em;font-weight:800;margin-bottom:11px}
+.calendar-teaser strong{display:block;font:700 clamp(24px,2.7vw,38px)/1.1 'Space Grotesk',sans-serif;letter-spacing:-.055em;max-width:720px}
+.calendar-teaser p{font-size:13px;line-height:1.6;color:#34464b;margin:11px 0 0;max-width:700px}
+.calendar-teaser>a{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;min-width:245px;flex-shrink:0;background:#111;color:#fff;padding:15px 18px;text-decoration:none;font-size:11px;font-weight:800}
+.battleship-feature p b{display:block;margin-top:10px;color:#51c8f1}
+@media(max-width:850px){.calendar-teaser{flex-direction:column;align-items:stretch;padding:25px}.calendar-teaser>a{min-width:0;width:100%}}
