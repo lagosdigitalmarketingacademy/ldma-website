@@ -31,6 +31,8 @@ async function enforceLimit(req){
 const instructions=[
  'You are Ask LDMA, a genuine conversational marketing education adviser for Lagos Digital Marketing Academy, Nigeria.',
  'Understand the visitor\'s actual question and prior messages; reason about their needs, experience, budget and business goals. Ask one useful follow-up only when necessary. Do not answer with generic canned slogans.',
+ 'For diagnosis questions, identify the real commercial problem before prescribing channels: clarify the audience, offer, customer motivation, buying friction, unit economics and measurable next experiment. Make recommendations proportional to the visitor\'s resources, not a one-size-fits-all marketing checklist.',
+ 'Do not start every answer with the same introduction or close every answer with an enrolment pitch. If the question is about a real business problem, solve that problem first; mention LDMA training only if it is directly relevant.',
  'Give specific, practical, thoughtful answers to marketing questions even if the visitor is not ready to enrol. Where useful, give a short actionable example for a Nigerian SME or professional.',
  'LDMA teaches strategy, consumer culture and psychology, positioning, content, Meta and TikTok ads, LinkedIn B2B, analytics, live client briefs, teamwork and final pitches. Physical, hands-on Lagos learning is central.',
  'The user has approved the Battleship 2027 fee of ₦250,000. Battleship is a proposed seven-Saturday practical programme. All dates and locations are still provisional until the academy confirms them.',
@@ -54,12 +56,12 @@ export default async function handler(req,res){
  try{body=typeof req.body==='string'?JSON.parse(req.body):req.body||{}}catch{return json(res,400,{error:'Invalid message format'})}
  if(!body||typeof body!=='object'||Array.isArray(body)||JSON.stringify(body).length>18000)return json(res,400,{error:'Invalid message'});
  const question=trim(body.message,1400);
- if(!question||question.length>1400)return json(res,400,{error:'Write a question of up to 1,400 characters'});
+ if(typeof body.message!=='string'||!question||body.message.trim().length>1400)return json(res,400,{error:'Write a question of up to 1,400 characters'});
  const history=Array.isArray(body.history)?body.history.slice(-10).filter(v=>v&&['user','assistant'].includes(v.role)&&typeof v.content==='string').map(v=>({role:v.role,content:trim(v.content,1200)})).filter(v=>v.content):[];
  // Ignore any client-supplied instructions, system roles or tool messages.
  try{
   if(!await enforceLimit(req))return json(res,429,{error:'Ask LDMA has reached its message limit. Please try again later.'});
-  const upstream=await fetch(config.url,{method:'POST',headers:{Authorization:'Bearer '+config.key,'Content-Type':'application/json'},body:JSON.stringify({model:config.model,instructions,input:[...history,{role:'user',content:question}],max_output_tokens:1100,store:false}),signal:AbortSignal.timeout(28000)});
+  const upstream=await fetch(config.url,{method:'POST',headers:{Authorization:'Bearer '+config.key,'Content-Type':'application/json'},body:JSON.stringify({model:config.model,instructions,input:[...history,{role:'user',content:question}],max_output_tokens:1800,reasoning:{effort:'low'},store:false}),signal:AbortSignal.timeout(28000)});
   if(!upstream.ok)return json(res,503,{error:'Ask LDMA is temporarily unavailable. Please try again shortly.',code:'provider_unavailable'});
   const data=await upstream.json();
   const reply=modelText(data);
