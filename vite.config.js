@@ -10,6 +10,7 @@ export default defineConfig({
         business:'for-business/index.html',
         battleship:'battleship/index.html',
         calendar:'calendar/index.html',
+        apply:'apply/index.html',
         insights:'insights/index.html',
         instagramConversion:'insights/why-instagram-views-dont-become-sales/index.html',
         marketingPlan:'insights/how-to-build-a-marketing-plan-in-nigeria/index.html',
