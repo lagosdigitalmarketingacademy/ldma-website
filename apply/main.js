@@ -8,6 +8,8 @@ const dateRange=s=>s.start===s.end?fmt(s.start):fmt(s.start)+' – '+fmt(s.end);
 const selectedProgramme=()=>plans.programmes.find(p=>p.id===programme.value);
 const selectedSession=()=>selectedProgramme()?.sessions.find(s=>s.start===cohort.value);
 const status=$('application-status');
+const onlineEnabled=import.meta.env.VITE_STUDENT_APPLICATION_ENABLED==='true';
+if(onlineEnabled)$('send-email').textContent='SUBMIT APPLICATION ENQUIRY →';
 let currentStep=1;
 for(const p of plans.programmes){const o=document.createElement('option');o.value=p.id;o.textContent=p.name;programme.append(o);}
 function updateProgramme(){
@@ -71,8 +73,22 @@ $('next-2').addEventListener('click',()=>{if(valid(['full-name','phone','email',
 $('back-2').addEventListener('click',()=>showStep(1));
 $('back-3').addEventListener('click',()=>showStep(2));
 form.addEventListener('submit',e=>e.preventDefault());
-$('send-email').addEventListener('click',()=>{
+$('send-email').addEventListener('click',async()=>{
  if(currentStep!==3)return;
+ const button=$('send-email');
+ if(onlineEnabled&&button.dataset.emailFallback!=='true'){
+  button.disabled=true;button.textContent='SUBMITTING…';status.textContent='';
+  try{
+   const payload={programme:programme.value,cohort:cohort.value,fullName:$('full-name').value.trim(),phone:$('phone').value.trim(),email:$('email').value.trim(),occupation:$('occupation').value,goal:$('goal').value.trim(),consent:$('consent').checked,website:$('website').value};
+   const response=await fetch('/api/student-application',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok||!data.ok||!data.reference)throw new Error(data.error||'Unable to confirm your application.');
+   status.textContent='Application enquiry received. Reference: '+data.reference+'. This is not an admission, reserved seat or payment confirmation. LDMA will contact you after review.';
+   button.textContent='ENQUIRY RECEIVED';return;
+  }catch(err){status.textContent=(err.message||'Online intake is unavailable.')+' You can still prepare and send the application by email.';button.textContent='PREPARE APPLICATION EMAIL →';button.dataset.emailFallback='true';}
+  finally{button.disabled=false;}
+  return;
+ }
  const p=selectedProgramme();const subject='LDMA 2027 Application Enquiry — '+p.name;
  window.location.href='mailto:info@ldmacademy.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(applicationText());
  status.textContent='An email draft has been prepared. You must press Send in your email application. This website has not submitted your application or reserved a seat.';
