@@ -2,7 +2,7 @@ import test,{beforeEach,afterEach} from 'node:test';
 import assert from 'node:assert/strict';
 import handler from '../api/student-application.js';
 
-const keys=['VITE_SUPABASE_URL','LDMA_SUPABASE_SERVICE_ROLE_KEY','UPSTASH_REDIS_REST_URL','UPSTASH_REDIS_REST_TOKEN','LDMA_RATE_LIMIT_SALT'];
+const keys=['VITE_SUPABASE_URL','LDMA_SUPABASE_SERVICE_ROLE_KEY','UPSTASH_REDIS_REST_URL','UPSTASH_REDIS_REST_TOKEN','KV_REST_API_URL','KV_REST_API_TOKEN','LDMA_RATE_LIMIT_SALT'];
 const saved=Object.fromEntries(keys.map(k=>[k,process.env[k]]));
 const oldFetch=globalThis.fetch;
 const example={programme:'battleship',cohort:'2027-01-30',fullName:'Ada Example',email:'ada@example.com',phone:'08012345678',occupation:'Business owner',goal:'I want to build a stronger marketing strategy for my shop.',consent:true,website:''};
@@ -21,6 +21,20 @@ afterEach(()=>{for(const k of keys){if(saved[k]===undefined)delete process.env[k
 test('fails closed without database credentials',async()=>{
  delete process.env.LDMA_SUPABASE_SERVICE_ROLE_KEY;
  const r=await call(req());assert.equal(r.code,503);
+});
+test('recognises Vercel Marketplace KV_REST_API credentials',async()=>{
+ process.env.KV_REST_API_URL='https://kv-redis.example.invalid';
+ process.env.KV_REST_API_TOKEN='marketplace-token';
+ delete process.env.UPSTASH_REDIS_REST_URL;
+ delete process.env.UPSTASH_REDIS_REST_TOKEN;
+ let redisCalls=0;
+ globalThis.fetch=async(url,opts)=>{
+  if(String(url).includes('kv-redis')){redisCalls++;assert.equal(opts.headers.Authorization,'Bearer marketplace-token');return {ok:true,json:async()=>({result:1})};}
+  return {ok:true,json:async()=>[{id:'12345678-aaaa-bbbb-cccc-000000000000'}]};
+ };
+ const x=await call(req());
+ assert.equal(x.code,201);
+ assert.equal(redisCalls,2);
 });
 test('rejects invalid methods, origins and JSON',async()=>{
  assert.equal((await call(req(example,{method:'GET'}))).code,405);
