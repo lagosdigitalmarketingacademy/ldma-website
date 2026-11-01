@@ -51,3 +51,10 @@ html{scroll-padding-top:104px}
 .hero-secondary-link:hover{color:#51c8f1}
 .contact-note a{text-decoration:underline;text-underline-offset:4px}
 @media(max-width:650px){.hero h1{font-size:clamp(44px,10vw,68px)}.hero-cta-stack{width:100%}.hero-cta-stack .btn-lime{min-width:0}}
+
+.battleship-feature{background:#111;color:#fff;padding:32px;display:flex;align-items:end;justify-content:space-between;gap:35px;margin:0 0 45px}
+.battleship-feature small{font-size:10px;font-weight:800;letter-spacing:.11em;color:#51c8f1}
+.battleship-feature h3{font:700 clamp(26px,3.3vw,44px)/1.05 'Space Grotesk',sans-serif;letter-spacing:-.055em;margin:16px 0}
+.battleship-feature p{font-size:14px;line-height:1.7;color:#c4c8c7;max-width:610px;margin:0}
+.battleship-feature .btn-black{background:#51c8f1;color:#111;min-width:240px;flex-shrink:0}
+@media(max-width:750px){.battleship-feature{align-items:stretch;flex-direction:column;padding:25px}.battleship-feature .btn-black{min-width:0;width:100%}}
