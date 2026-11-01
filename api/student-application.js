@@ -5,13 +5,16 @@ import {readFileSync} from 'node:fs';
 const plans=JSON.parse(readFileSync(new URL('../data/2027-programmes.json',import.meta.url),'utf8'));
 const json=(res,status,data)=>res.status(status).setHeader('Cache-Control','no-store').setHeader('Content-Type','application/json; charset=utf-8').end(JSON.stringify(data));
 const clean=(v,max)=>typeof v==='string'?v.trim().slice(0,max):'';
+// Upstash Marketplace exposes KV_REST_API_*; direct Upstash uses UPSTASH_REDIS_REST_*.
+const redisConfig=()=>({url:process.env.UPSTASH_REDIS_REST_URL||process.env.KV_REST_API_URL,token:process.env.UPSTASH_REDIS_REST_TOKEN||process.env.KV_REST_API_TOKEN});
 const originAllowed=origin=>!origin||['https://ldmacademy.com','https://www.ldmacademy.com','https://ldma-website.vercel.app'].includes(origin)||/^https:\/\/ldma-website-[a-z0-9-]+\.vercel\.app$/.test(origin);
 async function checkLimit(req){
  const ip=String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0].trim();
+ const redis=redisConfig();
  const id=createHash('sha256').update(process.env.LDMA_RATE_LIMIT_SALT+':'+ip).digest('hex').slice(0,32);
  const code="local n=redis.call('INCR',KEYS[1]); if n == 1 then redis.call('EXPIRE',KEYS[1],ARGV[1]) end; return n";
  for(const [key,limit,ttl] of [['ldma:apply:ip:'+id,5,3600],['ldma:apply:global',200,86400]]){
-  const response=await fetch(process.env.UPSTASH_REDIS_REST_URL,{method:'POST',headers:{Authorization:'Bearer '+process.env.UPSTASH_REDIS_REST_TOKEN,'Content-Type':'application/json'},body:JSON.stringify(['EVAL',code,1,key,ttl]),signal:AbortSignal.timeout(3000)});
+  const response=await fetch(redis.url,{method:'POST',headers:{Authorization:'Bearer '+redis.token,'Content-Type':'application/json'},body:JSON.stringify(['EVAL',code,1,key,ttl]),signal:AbortSignal.timeout(3000)});
   if(!response.ok)throw new Error('Rate limit unavailable');
   const payload=await response.json();
   if(payload.error||!Number.isFinite(Number(payload.result)))throw new Error('Rate limit unavailable');
@@ -24,7 +27,8 @@ export default async function handler(req,res){
  if(!originAllowed(req.headers.origin))return json(res,403,{error:'Origin not allowed'});
  if(!String(req.headers['content-type']||'').toLowerCase().includes('application/json'))return json(res,415,{error:'Expected JSON'});
  if(Number(req.headers['content-length']||0)>10000)return json(res,413,{error:'Application is too long'});
- if(!process.env.VITE_SUPABASE_URL||!process.env.LDMA_SUPABASE_SERVICE_ROLE_KEY||!process.env.UPSTASH_REDIS_REST_URL||!process.env.UPSTASH_REDIS_REST_TOKEN||!process.env.LDMA_RATE_LIMIT_SALT)
+ const redis=redisConfig();
+ if(!process.env.VITE_SUPABASE_URL||!process.env.LDMA_SUPABASE_SERVICE_ROLE_KEY||!redis.url||!redis.token||!process.env.LDMA_RATE_LIMIT_SALT)
   return json(res,503,{error:'Online applications are not available yet. Please use the email option.'});
  let raw;
  try{raw=typeof req.body==='string'?JSON.parse(req.body):req.body||{}}catch{return json(res,400,{error:'Invalid application format'})}
