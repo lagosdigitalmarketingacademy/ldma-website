@@ -82,6 +82,6 @@ test('planned classes do not compete for the same calendar day',()=>{
 });
 test('all enquiry links are email-first and do not imply completed payment',()=>{
  assert.ok(calendar.includes('mailto:info@ldmacademy.com'));
- assert.ok(calendar.includes('you must press Send'));
+ assert.ok(calendar.includes('press Send in your email application'));
  assert.ok(!calendar.includes('Pay now'));
 });
