@@ -22,6 +22,14 @@
 - The AI adviser runs in guided mode by default. Enable `VITE_ADVISER_AI_ENABLED=true` only after configuring and testing the secure AI endpoint, catalogue and distributed rate limits.
 - Corporate enquiries remain email-first until `VITE_CORPORATE_ENQUIRY_ENABLED=true` is explicitly set after secure server-side testing.
 
+## Proposed 2027 programme calendar
+- Added `/calendar/` with six LDMA programmes, 20 proposed 2027 editions, indicative fees from ₦20,000 to ₦250,000, location areas, course formats and prefilled email enquiry links.
+- Battleship: four proposed seven-Saturday cohorts, ₦250,000; the April edition skips 1 May.
+- Dates, fees and locations are **planning proposals only**; do not activate checkout or call them confirmed without founder, venue and facilitator approval.
+- The calendar is linked from the homepage, Battleship page, corporate footer and search sitemap.
+- Programme assumptions and pricing rationale: `docs/LDMA_2027_PROGRAMME_PLAN.md`; structured data: `data/2027-programmes.json`.
+- `tests/calendar-2027.test.mjs` checks date formats, tuition consistency, Saturday/weekday schedules, holiday break and collisions.
+
 ## Quality assurance
 - Desktop, tablet and mobile navigation; keyboard tab order; mobile menu close on click; anchors and back links.
 - Each solution tab updates the detail panel and preselects the training focus when visitors start an enquiry.
