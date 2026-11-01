@@ -41,6 +41,7 @@ test('rejects invalid origin and method',async()=>{
 });
 test('validates user message',async()=>{
  assert.equal((await call(req({message:'',history:[]}))).code,400);
+ assert.equal((await call(req({message:'x'.repeat(1401),history:[]}))).code,400);
  assert.equal((await call(req({message:'hi',history:[]},{headers:{'content-type':'text/plain'}}))).code,415);
 });
 test('passes multi-turn context and genuine model response',async()=>{
@@ -56,6 +57,8 @@ test('passes multi-turn context and genuine model response',async()=>{
  assert.equal(payload.input[0].content,'I sell clothes in Lagos');
  assert.equal(payload.model,'gpt-5-mini');
  assert.equal(payload.store,false);
+ assert.equal(payload.reasoning.effort,'low');
+ assert.equal(payload.max_output_tokens,1800);
  assert.ok(payload.instructions.includes('₦250,000'));
  assert.ok(payload.instructions.includes('provisional'));
 });
