@@ -11,7 +11,8 @@ export default defineConfig({
         insights:'insights/index.html',
         instagramConversion:'insights/why-instagram-views-dont-become-sales/index.html',
         marketingPlan:'insights/how-to-build-a-marketing-plan-in-nigeria/index.html',
-        aiForBusiness:'insights/practical-ai-for-nigerian-business-teams/index.html'
+        aiForBusiness:'insights/practical-ai-for-nigerian-business-teams/index.html',
+        privacy:'privacy/index.html'
       }
     }
   }
