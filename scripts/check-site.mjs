@@ -33,7 +33,7 @@ if(!main.includes('/calendar/'))errors.push('2027 training calendar not linked f
 if(!read('battleship/index.html').includes('/calendar/'))errors.push('2027 calendar not linked from Battleship page');
 if(!calendar.includes('PLANNING PREVIEW')||!calendar.includes('NOT OPEN FOR PAYMENT'))errors.push('Unconfirmed 2027 dates/fees are not clearly labelled');
 if(!calendar.includes('mailto:info@ldmacademy.com'))errors.push('2027 course enquiry email link missing');
-if(!calendar.includes('2027-04-03'))errors.push('Q2 Battleship date missing from proposed calendar');
+if(!calendar.includes('3 Apr – 22 May 2027'))errors.push('Q2 Battleship date missing from proposed calendar');
 if(!business.includes('state===\'error\''))errors.push('Email fallback on failed submission missing');
 if(!existsSync(resolve(root,'api/corporate-enquiry.js')))errors.push('Enquiry API handler missing');
 if(!existsSync(resolve(root,'supabase/corporate_enquiries.sql')))errors.push('Lead storage schema missing');
