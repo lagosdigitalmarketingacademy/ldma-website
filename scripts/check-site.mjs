@@ -39,6 +39,9 @@ if(!adviser.includes('AI_GATEWAY_MODEL')||!adviser.includes('OPENAI_API_KEY'))er
 if(store.includes('localResponse('))errors.push('Fake keyword-based Ask LDMA responses remain');
 if(!existsSync(resolve(root,'tests/adviser.test.mjs')))errors.push('AI regression tests missing');
 if(!existsSync(resolve(root,'tests/application.test.mjs')))errors.push('Application regression tests missing');
+if(!existsSync(resolve(root,'tests/student-application.test.mjs')))errors.push('Student intake API regression tests missing');
+if(!existsSync(resolve(root,'supabase/student_applications_2027.sql')))errors.push('Student intake private schema missing');
+if(!read('apply/main.js').includes("VITE_STUDENT_APPLICATION_ENABLED==='true'"))errors.push('Online application intake is not feature gated');
 if(!read('battleship/index.html').includes('/calendar/'))errors.push('2027 calendar not linked from Battleship page');
 if(!calendar.includes('PLANNING PREVIEW')||!calendar.includes('NOT OPEN FOR PAYMENT'))errors.push('Unconfirmed 2027 dates/fees are not clearly labelled');
 if(!calendar.includes('mailto:info@ldmacademy.com'))errors.push('2027 course enquiry email link missing');
