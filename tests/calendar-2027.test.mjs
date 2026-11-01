@@ -16,7 +16,7 @@ test('2027 pricing is a proposed plan, not a live booking offer',()=>{
  assert.equal(data.status,'proposed');
  assert.match(calendar,/PLANNING PREVIEW/);
  assert.match(calendar,/NOT OPEN FOR PAYMENT/);
- assert.match(calendar,/subject to LDMA/);
+ assert.match(calendar,/planning proposals awaiting final approval/);
 });
 test('all six planned programmes and twenty sessions appear in the calendar',()=>{
  assert.equal(data.programmes.length,6);
