@@ -56,7 +56,7 @@ export default function CorporatePage(){
     <a href="#approach" onClick={()=>setMenu(false)}>Our approach</a>
     <a href="#how-it-works" onClick={()=>setMenu(false)}>How it works</a>
     <a href="#questions" onClick={()=>setMenu(false)}>FAQs</a>
-    <a href="/" onClick={()=>setMenu(false)}>Individual learning</a>
+    <a href="/#programmes" onClick={()=>setMenu(false)}>Individual learning</a>
    </nav>
    <a className="cb-header-cta" href="#corporate-enquiry">Request training proposal <ArrowUpRight size={16}/></a>
    <button className="cb-menu" type="button" onClick={()=>setMenu(!menu)} aria-label={menu?'Close navigation':'Open navigation'} aria-expanded={menu}>{menu?<X/>:<Menu/>}</button>
