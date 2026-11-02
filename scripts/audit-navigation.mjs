@@ -69,5 +69,32 @@ if(finder.includes('id="training-brief"'))errors.push('Duplicate corporate enqui
 if(!home.includes('requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView'))errors.push('React homepage does not restore incoming hash deep links');
 if(!stories.includes('href="/#trainee-stories"'))errors.push('Battleship trainee stories link missing');
 if(!home.includes('<Testimonials/>'))errors.push('Trainee stories gallery not mounted on homepage');
+
+// Interaction wiring checks: tabs and calls-to-action must do something, not merely look clickable.
+const calendar=read('calendar/index.html');
+const application=read('apply/main.js');
+const adviser=read('src/Store.jsx');
+const required=[
+ [home,"onClick={()=>setActive(f)}",'Homepage course category filters'],
+ [home,"onClick={()=>setSelected(t)",'Homepage course detail buttons'],
+ [home,'href="/apply/"','Single application path'],
+ [finder,"new CustomEvent('ldma:course-recommendation'",'Skill finder opens matching course details'],
+ [finder,'e.preventDefault()','Skill finder does not jump behind an open modal'],
+ [calendar,"b.addEventListener('click',()=>filter(b.dataset.filter))",'2027 calendar programme filters'],
+ [calendar,"s.hidden=value!=='all'",'Calendar filtering changes visible sessions'],
+ [business,'role="tab"','Corporate training solution tabs'],
+ [business,'onClick={()=>setActive(t.id)}','Corporate training tabs change the selected solution'],
+ [application,"$('next-1').addEventListener('click'",'Application step 1'],
+ [application,"$('next-2').addEventListener('click'",'Application step 2'],
+ [application,"$('back-2').addEventListener('click'",'Application back button'],
+ [application,"$('send-email').addEventListener('click'",'Application submission/email action'],
+ [stories,'onClick={()=>setActive(reel.id)}','Trainee video play buttons'],
+ [stories,'setShowAll(v=>!v)','Trainee video show all / show fewer'],
+ [adviser,"fetch('/api/adviser'",'Ask LDMA real adviser endpoint']
+];
+for(const [source,marker,description] of required)if(!source.includes(marker))errors.push('Inactive control: '+description);
+if(home.includes('PREPARE AN ENQUIRY'))errors.push('Duplicate course modal enquiry form still present');
+if(!business.includes('href="/#programmes"'))errors.push('Corporate Individual Learning tab does not lead to actual programmes');
+
 if(errors.length){console.error('Navigation audit failed:\n'+errors.map(x=>' - '+x).join('\n'));process.exit(1)}
 console.log('Navigation audit passed: '+Object.keys(pages).length+' pages, '+checked+' local link references, anchors, logo/home routes, six distinct nav items and no unfinished homepage modules.');
