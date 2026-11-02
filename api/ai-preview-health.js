@@ -15,6 +15,17 @@ export default async function handler(req,res){
    redisOk=result.result==='PONG';
   }catch{}
  }
+ if(req.query?.check==='model'&&redisOk&&hasModel&&hasAuth){
+  try{
+   const lock=await fetch(redisUrl,{method:'POST',headers:{Authorization:'Bearer '+redisToken,'Content-Type':'application/json'},body:JSON.stringify(['SET','ldma:ai:model-status:2026-11-02','used','EX',86400,'NX']),signal:AbortSignal.timeout(2500)});
+   const l=lock.ok?await lock.json():{};
+   if(l.result!=='OK')return send(res,409,{error:'Model diagnostic already checked'});
+   const response=await fetch('https://ai-gateway.vercel.sh/v1/responses',{method:'POST',headers:{Authorization:'Bearer '+(process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN),'Content-Type':'application/json'},body:JSON.stringify({model:process.env.AI_GATEWAY_MODEL,instructions:'Answer as a practical marketing adviser in one short sentence.',input:[{role:'user',content:'Why might a clothing shop get views but no sales?'}],max_output_tokens:300,reasoning:{effort:'low'},store:false}),signal:AbortSignal.timeout(25000)});
+   const data=await response.json().catch(()=>({}));
+   const answer=(data.output||[]).flatMap(x=>(x.content||[]).filter(y=>y.type==='output_text').map(y=>y.text)).join('').slice(0,350);
+   return send(res,200,{gatewayStatus:response.status,modelAnswer:answer||null,gatewayErrorCode:data.error?.code||data.error?.type||data.code||null,gatewayErrorMessage:typeof data.error?.message==='string'?data.error.message.slice(0,240):null,topLevelFields:Object.keys(data).slice(0,12)});
+  }catch{return send(res,503,{error:'Model diagnostic failed'})}
+ }
  if(req.query?.check==='gateway'&&redisOk&&hasModel&&hasAuth){
   try{
    const lock=await fetch(redisUrl,{method:'POST',headers:{Authorization:'Bearer '+redisToken,'Content-Type':'application/json'},body:JSON.stringify(['SET','ldma:ai:gateway-status:2026-11-02','used','EX',86400,'NX']),signal:AbortSignal.timeout(2500)});
