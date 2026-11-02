@@ -10,6 +10,17 @@
 
 **Next step:** Deploy the feature branch to Preview after `VITE_ADVISER_AI_ENABLED=true` was saved, confirm the UI contains the active chat and `/api/adviser` is deployed, then ask the owner to try multi-turn questions. Confirm a small AI Gateway API-key spending budget (e.g. $5) and monitor initial usage. Do not activate Production or create payment flows without explicit approval.\n
 
+## Trainee video testimonials — 2 November 2026
+
+LDMA supplied **11 public Instagram Reel URLs** for its existing recorded trainee videos. We use canonical Instagram Reel IDs in `src/traineeReels.js`; we do not download or rehost videos, infer names/cohorts or invent testimonials, quotations or results.
+
+- Homepage: `src/Testimonials.jsx` appears immediately after the programmes section, initially shows three branded preview cards, and allows visitors to reveal all 11.
+- Battleship page: the same gallery is mounted in compact mode under the programme experience section, with a link to the full homepage gallery.
+- The Instagram player is **loaded only when the visitor clicks PLAY VIDEO**, reducing third-party requests on initial load. Every card provides a direct Instagram link for browsers that block embeds, require cookies or require Instagram login.
+- Ask LDMA can point visitors asking for trainee experiences to `/#trainee-stories` without claiming to have watched the videos or fabricating endorsements.
+- No video descriptions, thumbnails, quotes or speaker names have been asserted: Instagram playback/content was not independently accessible for editorial review through the available tools. Add those details only after verifying each recording and confirming permission to feature the speakers.
+- This is Preview-only, not a production launch. Regression tests verify all 11 IDs, both page placements, click-to-load player, Instagram fallback and AI link. Review mobile presentation and actual Instagram playback in a normal browser before approval.
+
 ## 1. Student registration journey
 
 **Public page:** `/apply/` (linked from the homepage, Battleship page, 2027 calendar and student portal).
