@@ -1,0 +1,153 @@
+{
+  "year": 2027,
+  "status": "proposed",
+  "currency": "NGN",
+  "contact": "info@ldmacademy.com",
+  "notes": [
+    "Planning dates and fees, not approved for enrolment or payment",
+    "Venues and exact timetables subject to confirmation",
+    "Battleship April edition skips 2027-05-01"
+  ],
+  "programmes": [
+    {
+      "id": "battleship",
+      "name": "Battleship Digital Marketing Training",
+      "fee_naira": 250000,
+      "duration": "7 Saturdays",
+      "location": "Gbagada, Lagos",
+      "sessions": [
+        {
+          "start": "2027-01-30",
+          "end": "2027-03-13",
+          "skip": []
+        },
+        {
+          "start": "2027-04-03",
+          "end": "2027-05-22",
+          "skip": [
+            "2027-05-01"
+          ]
+        },
+        {
+          "start": "2027-07-17",
+          "end": "2027-08-28",
+          "skip": []
+        },
+        {
+          "start": "2027-10-16",
+          "end": "2027-11-27",
+          "skip": []
+        }
+      ]
+    },
+    {
+      "id": "mini",
+      "name": "Gbagada Digital Marketing Mini-Core",
+      "fee_naira": 65000,
+      "duration": "2 days",
+      "location": "Gbagada, Lagos",
+      "sessions": [
+        {
+          "start": "2027-03-20",
+          "end": "2027-03-21"
+        },
+        {
+          "start": "2027-06-19",
+          "end": "2027-06-20"
+        },
+        {
+          "start": "2027-09-18",
+          "end": "2027-09-19"
+        },
+        {
+          "start": "2027-12-04",
+          "end": "2027-12-05"
+        }
+      ]
+    },
+    {
+      "id": "ikorodu",
+      "name": "Ikorodu Digital Marketing Intensive",
+      "fee_naira": 30000,
+      "duration": "4 days",
+      "location": "Ikorodu, Lagos",
+      "sessions": [
+        {
+          "start": "2027-04-12",
+          "end": "2027-04-15"
+        },
+        {
+          "start": "2027-07-05",
+          "end": "2027-07-08"
+        },
+        {
+          "start": "2027-10-04",
+          "end": "2027-10-07"
+        }
+      ]
+    },
+    {
+      "id": "creator",
+      "name": "Content Creators Bootcamp",
+      "fee_naira": 20000,
+      "duration": "1 day",
+      "location": "Gbagada, Lagos",
+      "sessions": [
+        {
+          "start": "2027-01-16",
+          "end": "2027-01-16"
+        },
+        {
+          "start": "2027-06-26",
+          "end": "2027-06-26"
+        },
+        {
+          "start": "2027-09-11",
+          "end": "2027-09-11"
+        },
+        {
+          "start": "2027-12-11",
+          "end": "2027-12-11"
+        }
+      ]
+    },
+    {
+      "id": "tiktok",
+      "name": "TikTok Ads Masterclass",
+      "fee_naira": 25000,
+      "duration": "1 day",
+      "location": "Gbagada, Lagos",
+      "sessions": [
+        {
+          "start": "2027-01-23",
+          "end": "2027-01-23"
+        },
+        {
+          "start": "2027-09-25",
+          "end": "2027-09-25"
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "name": "Practical AI for Business & Marketing",
+      "fee_naira": 35000,
+      "duration": "1 day",
+      "location": "Gbagada, Lagos",
+      "sessions": [
+        {
+          "start": "2027-06-05",
+          "end": "2027-06-05"
+        },
+        {
+          "start": "2027-09-04",
+          "end": "2027-09-04"
+        },
+        {
+          "start": "2027-12-18",
+          "end": "2027-12-18"
+        }
+      ]
+    }
+  ]
+}
