@@ -15,6 +15,16 @@ export default async function handler(req,res){
    redisOk=result.result==='PONG';
   }catch{}
  }
+ if(req.query?.check==='gateway'&&redisOk&&hasModel&&hasAuth){
+  try{
+   const lock=await fetch(redisUrl,{method:'POST',headers:{Authorization:'Bearer '+redisToken,'Content-Type':'application/json'},body:JSON.stringify(['SET','ldma:ai:gateway-status:2026-11-02','used','EX',86400,'NX']),signal:AbortSignal.timeout(2500)});
+   const l=lock.ok?await lock.json():{};
+   if(l.result!=='OK')return send(res,409,{error:'Diagnostic already checked'});
+   const response=await fetch('https://ai-gateway.vercel.sh/v1/credits',{headers:{Authorization:'Bearer '+(process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN)},signal:AbortSignal.timeout(12000)});
+   const data=await response.json().catch(()=>({}));
+   return send(res,200,{gatewayStatus:response.status,gatewayErrorCode:data.error?.code||data.error?.type||data.code||null,gatewayErrorMessage:typeof data.error?.message==='string'?data.error.message.slice(0,180):null,hasCredits:typeof data.balance==='number'?data.balance>0:null});
+  }catch{return send(res,503,{error:'Gateway diagnostic failed'})}
+ }
  if(req.query?.test==='one-time'&&redisOk&&hasModel&&hasAuth){
   try{
    // Atomic, one-use-only gate. No visitor-controlled prompts or API secrets are exposed.
