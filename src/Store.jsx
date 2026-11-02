@@ -26,10 +26,11 @@ const adviserLinks={
  '/calendar/':'Explore the 2027 training calendar',
  '/apply/':'Start an application',
  '/for-business/':'Explore corporate training',
- '/insights/':'Read LDMA insights'
+ '/insights/':'Read LDMA insights',
+ '/#trainee-stories':'Watch real trainee videos'
 };
 function renderAdviserMessage(message){
- return String(message).split(/(\/(?:battleship|calendar|apply|for-business|insights)\/)/g).map((part,index)=>
+ return String(message).split(/(\/\#trainee-stories|\/(?:battleship|calendar|apply|for-business|insights)\/)/g).map((part,index)=>
   Object.hasOwn(adviserLinks,part)?<a key={index} href={part}>{adviserLinks[part]}</a>:<React.Fragment key={index}>{part}</React.Fragment>
  );
 }
