@@ -76,7 +76,7 @@ const application=read('apply/main.js');
 const adviser=read('src/Store.jsx');
 const required=[
  [home,"onClick={()=>setActive(f)}",'Homepage course category filters'],
- [home,"onClick={()=>setSelected(t)",'Homepage course detail buttons'],
+ [home,"setSelected(t)",'Homepage course detail buttons'],
  [home,'href="/apply/"','Single application path'],
  [finder,"new CustomEvent('ldma:course-recommendation'",'Skill finder opens matching course details'],
  [finder,'e.preventDefault()','Skill finder does not jump behind an open modal'],
