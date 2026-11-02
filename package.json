@@ -7,7 +7,7 @@
     "dev": "vite --host",
     "build": "npm run check:site && npm run test && vite build",
     "preview": "vite preview",
-    "check:site": "node scripts/check-site.mjs",
+    "check:site": "node scripts/check-site.mjs && node scripts/audit-navigation.mjs",
     "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
