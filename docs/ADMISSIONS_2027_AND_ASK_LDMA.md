@@ -50,6 +50,14 @@ Payment integration should:
 - Support approved instalments only after LDMA decides on the policy.
 - Require real end-to-end sandbox and live verification before any public payment button is enabled.
 
+## Ask LDMA training-adviser conversion journey — updated 2 November 2026
+
+The AI is now instructed to follow **diagnose → demonstrate one useful action → identify skill gap → recommend one best-fit LDMA programme → invite next step** for relevant business and marketing questions. It should not deliver an unsolicited full marketing consultancy, nor manipulate visitors by withholding essential facts. An initial diagnosis aims for 80–130 words; detailed help remains available if explicitly requested.
+
+Course matches are based on visitor intent: Battleship for broad strategy/conversion/positioning; Mini-Core or Ikorodu Intensive for beginner foundations; Content Creators Bootcamp for content; TikTok Ads Masterclass for TikTok paid campaigns; Practical AI for Business & Marketing for AI workflows; Corporate Training for teams. Links /battleship/, /calendar/, /for-business/ and /apply/ are rendered as clickable chat links. Battleship tuition ₦250,000 is confirmed; cohort dates and venues remain provisional; other programme prices are proposals.
+
+A real preview AI test on 2 November 2026 returned HTTP 200, diagnosed a Lagos clothing retailer's Instagram view-to-sale problem, recommended Battleship with /battleship/ and linked /apply/. We tightened the initial reply length and clarified the fee after that test. The one-time QA endpoint was removed. The change is Preview-only pending user acceptance; production remains untouched.
+
 ## 2. Ask LDMA: actual conversational AI, not scripted replies
 
 **Previous issue:** the chat component used a `localResponse` keyword-matching function whenever AI was disabled or failed. It produced repetitive, fake-sounding answers.
