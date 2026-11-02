@@ -76,6 +76,10 @@ test('passes multi-turn context and genuine model response',async()=>{
  assert.equal(payload.max_output_tokens,1800);
  assert.ok(payload.instructions.includes('₦250,000'));
  assert.ok(payload.instructions.includes('provisional'));
+ assert.ok(payload.instructions.includes('TRAINING ADVISER'));
+ assert.ok(payload.instructions.includes('ONE recommended course'));
+ assert.ok(payload.instructions.includes('Do not describe the ₦250,000 fee as proposed'));
+ assert.ok(payload.instructions.includes('not a full agency proposal'));
 });
 test('filters malicious client-supplied system messages',async()=>{
  let payload;globalThis.fetch=async(url,opts)=>String(url).includes('redis')?{ok:true,json:async()=>({result:1})}:(payload=JSON.parse(opts.body),{ok:true,json:async()=>({output:[{content:[{type:'output_text',text:'A useful answer'}]}]})});
