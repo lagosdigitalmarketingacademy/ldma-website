@@ -10,7 +10,7 @@ export default function Testimonials({compact=false}){
  return <section id="trainee-stories" className={'ldma-voices'+(compact?' ldma-voices-compact':'')} aria-labelledby={compact?'voices-title-compact':'voices-title'}>
   <div className="ldma-voices-head">
    <div>
-    <div className="ldma-voices-eyebrow"><span>LDMA / FROM THE ROOM</span><span>REAL VOICES. REAL EXPERIENCES.</span></div>
+    <div className="ldma-voices-eyebrow"><span>{compact?'LDMA / FROM THE ROOM':'04 / REAL TRAINEE STORIES'}</span><span>REAL VOICES. REAL EXPERIENCES.</span></div>
     <h2 id={compact?'voices-title-compact':'voices-title'}>DON'T TAKE OUR<br/>WORD FOR IT.<br/><em>HEAR THEIRS.</em></h2>
    </div>
    <p>Hear from people who have experienced LDMA training. These are their original Instagram videos — not scripted endorsements written for this website.</p>
